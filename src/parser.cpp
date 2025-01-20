@@ -14,6 +14,15 @@ Parser::Parser(std::vector<TOKEN> token) {
 	this->tokens = tokens;
 }
 
+Expr* Parser::parse() {
+	try {
+		return expression();
+	}
+	catch(std::runtime_error error){
+		//return null;
+	}
+}
+
 Expr* Parser::expression() {
 	return equality();
 }
@@ -101,6 +110,8 @@ Expr* Parser::primary() {
 		consume(RIGHT_PAREN, "Expect ')' after expression. ");
 		return new GroupingExpr(expr);
 	}
+
+	throw error(peek(), "Expect expression.");
 }
 
 TOKEN Parser::consume(TokenType type,const std::string& message) {
@@ -154,4 +165,26 @@ std::runtime_error Parser::error(TOKEN token,const std::string& message) {
 	lox.error(token, message);
 
 	return  std::runtime_error(token.line + " at '" + token.lexeme + "'" + message);
+}
+
+void Parser::synchronize() {
+	advance();
+
+	while (!is_at_end()) {
+		if (previous().type == SEMICOLON) return;
+
+		switch (peek().type) {
+		case CLASS:
+		case FUN:
+		case VAR:
+		case FOR:
+		case IF:
+		case WHILE:
+		case PRINT:
+		case RETURN:
+			return;
+		}
+
+		advance();
+	}
 }

@@ -28,10 +28,15 @@ private:
 	TOKEN previous();
 	TOKEN consume(TokenType type,const std::string& message);
 
+	void synchronize();
+
 	 
 	std::runtime_error error(TOKEN token, const std::string& message);
 public:
 	Parser(std::vector<TOKEN> tokens);
+
+	Expr* parse();
+		 
 	 
 
 

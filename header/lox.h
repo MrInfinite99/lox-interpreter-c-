@@ -6,6 +6,8 @@
 #include<vector>
 #include"token.h"
 #include"scanner.h"
+#include"parser.h"
+#include"astPrinter.h"
 
 class LOX {
 public:

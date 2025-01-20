@@ -44,11 +44,12 @@ void LOX::run(std::string& source) {
 	SCANNER scanner(source);
 
 	std::vector<TOKEN> tokens = scanner.scan_tokens();
+	Parser parser(tokens);
+	Expr* expression = parser.parse();
 
-	for (TOKEN token : tokens) {
-		token.print_token();
-	 }
-
+	if (hadError) return;
+	
+	std::cout << AstPrinter().print(expression) << std::endl;
 }
 
 void LOX::error(int line,const std::string& message) {
